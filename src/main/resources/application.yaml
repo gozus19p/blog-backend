@@ -1,2 +1,8 @@
+spring:
+  data:
+    mongodb:
+      database: test
+      uri: mongodb://127.0.0.1:27017
+
 app:
   name: Manuel Gozzi Blog

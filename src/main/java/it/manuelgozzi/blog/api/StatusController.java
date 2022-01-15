@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/status")
 public class StatusController {
 
+    /**
+     * Classic status API prepared to integrate the microservice inside PAAS architecture.
+     * @return <code>OK</code> if the system is up and running
+     */
     @GetMapping
     public String status() {
 
