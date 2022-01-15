@@ -4,5 +4,9 @@ spring:
       database: test
       uri: mongodb://127.0.0.1:27017
 
+# For future purposes
 app:
-  name: Manuel Gozzi Blog
+  auth:
+    basic:
+      username: manuel.gozzi
+      password: AjkD123!#@_d351KlK01,
