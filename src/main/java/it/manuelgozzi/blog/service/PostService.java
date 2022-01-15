@@ -61,11 +61,14 @@ public class PostService {
         }
 
         newPost.getHeader().setCreateDate(new Date());
-
         return this.postMongoReactiveRepository.save(newPost);
     }
 
-
+    /**
+     * It updates a single existing {@link Post} instance.
+     * @param existingPost is the {@link Post} that needs to be updated
+     * @return the {@link Mono<Post>} resulting
+     */
     public Mono<Post> updatePost(Post existingPost) {
 
         if (existingPost == null || existingPost.cannotBeWritten() || existingPost.getId() == null || existingPost.getId().replaceAll("\\s", "").isEmpty()) {
@@ -78,8 +81,18 @@ public class PostService {
         return this.postMongoReactiveRepository.save(existingPost);
     }
 
-
+    /**
+     * It searches using an example.
+     * @param example is the {@link Post} to use as an example
+     * @return the {@link Flux<Post>}
+     */
     public Flux<Post> search(Post example) {
+
+        if (example == null) {
+
+            log.warn("[{}] {example} parameter is null", Post.class.getName());
+            return Flux.empty();
+        }
 
         return Flux.fromIterable(
                 this.postMongoRepository.findAll(

@@ -2,7 +2,6 @@ package it.manuelgozzi.blog.configuration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,24 +37,36 @@ public class WebInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String decoded = new String(Base64.getDecoder().decode(auth.replace("Basic ", "")), StandardCharsets.UTF_8);
-        if (!decoded.contains(":")) {
+        try {
 
-            log.warn("Received unauthorized request [{}], malformed authorization header", request.getRequestURI());
+            String decoded = new String(Base64.getDecoder().decode(auth.replace("Basic ", "")), StandardCharsets.UTF_8);
+            if (!decoded.contains(":")) {
+
+                log.warn("Received unauthorized request [{}], malformed authorization header", request.getRequestURI());
+                response.setStatus(401);
+                return false;
+            }
+
+            var userAndPassword = decoded.split(":");
+            if (userAndPassword.length != 2) {
+
+                log.warn("Received unauthorized request [{}], format is invalid", request.getRequestURI());
+                response.setStatus(401);
+                return false;
+            }
+
+            return userAndPassword[0].equals(this.configuration.getAuth().getBasic().getUsername())
+                    && userAndPassword[1].equals(this.configuration.getAuth().getBasic().getPassword());
+        } catch (Exception e) {
+
+            log.error(
+                    "Something went wrong during base64 decodification [{}], request [{}] is unauthorized",
+                    e.getMessage(),
+                    request.getRequestURI()
+            );
             response.setStatus(401);
             return false;
         }
-
-        var userAndPassword = decoded.split(":");
-        if (userAndPassword.length != 2) {
-
-            log.warn("Received unauthorized request [{}], format is invalid", request.getRequestURI());
-            response.setStatus(401);
-            return false;
-        }
-
-        return userAndPassword[0].equals(this.configuration.getAuth().getBasic().getUsername())
-                && userAndPassword[1].equals(this.configuration.getAuth().getBasic().getPassword());
     }
 
     @Override
