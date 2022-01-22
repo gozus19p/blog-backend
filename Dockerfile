@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y openjdk-11-jdk
 CMD mkdir /app/sources
 COPY . /app/sources
 WORKDIR /app/sources
-VOLUME /app
 
 # Building from source
 CMD sh ./gradlew clean bootJar

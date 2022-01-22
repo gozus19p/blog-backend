@@ -15,7 +15,10 @@ import java.util.*
  * @author manu
  */
 @Service
-class PostService(val postMongoReactiveRepository: PostMongoReactiveRepository, val postMongoRepository: PostMongoRepository) {
+class PostService(
+    private val postMongoReactiveRepository: PostMongoReactiveRepository,
+    private val postMongoRepository: PostMongoRepository
+) {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -32,7 +35,7 @@ class PostService(val postMongoReactiveRepository: PostMongoReactiveRepository, 
 
     /**
      * It saves a new {@link Post} inside MongoDB instance.
-     * @param newPost is the new {@link Post} instance to save
+     * @param post is the new {@link Post} instance to save
      * @return the state after saving process
      */
     fun writePost(post: Post): Mono<Post> {
@@ -49,7 +52,7 @@ class PostService(val postMongoReactiveRepository: PostMongoReactiveRepository, 
 
     /**
      * It updates a single existing {@link Post} instance.
-     * @param existingPost is the {@link Post} that needs to be updated
+     * @param post is the {@link Post} that needs to be updated
      * @return the {@link Mono<Post>} resulting
      */
     fun updatePost(post: Post): Mono<Post> {
